@@ -45,4 +45,4 @@ class Context(object):
         # TODO: Make a copy, do not overwrite config
         channel.trait_set(**config)
         
-        return self.input_channels[name]
+        return self.input_channels[idx]

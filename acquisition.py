@@ -1,6 +1,9 @@
 from pyqtgraph import QtCore
 
 import socket
+import struct
+
+chooseMuse = True
 
 class UDPThread(QtCore.QThread):
   newPacket = QtCore.pyqtSignal(object)
@@ -15,9 +18,16 @@ class UDPThread(QtCore.QThread):
     self.buffer = []
 
   def run(self):
-    while True:
-      data, addr = self.socket.recvfrom(1024)
-      data = eval(data)
-      
-      self.newPacket.emit(eval(str(data)))
-      #QtGui.QApplication.instance().processEvents()
+    if chooseMuse:
+      while True:
+        unpacker = struct.Struct("fffff")
+        data  = self.socket.recv(unpacker.size)
+        data = unpacker.unpack(data)
+        self.newPacket.emit(data)
+    else:
+      while True:
+        data, addr = self.socket.recvfrom(1024)
+        data = eval(data)
+        
+        self.newPacket.emit(eval(str(data)))
+        #QtGui.QApplication.instance().processEvents()

@@ -289,6 +289,8 @@ class Waterfall(Block):
         freq_step = nyquist / bins
 
         # Calculate bin indices
+        if (freq_step == 0):
+            return
         self.lo_index = int(np.floor(self.lo / freq_step))
         self.hi_index = int(np.ceil(self.hi / freq_step))
 
@@ -331,7 +333,8 @@ class Waterfall(Block):
         self.waterfallImgArray[-1] = C
 
     def updateGUI(self):
-        self.waterfallImg.setImage(self.waterfallImgArray.T,
+        if(hasAttr(self,'waterfallImgArray')):
+            self.waterfallImg.setImage(self.waterfallImgArray.T,
                                    autoLevels=self.autoscale_button.checkState(),
                                    #autoRange=False
                                    )

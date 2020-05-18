@@ -28,26 +28,27 @@ counter = 0
 def setup_flow(context):
 	global OSC1
 
-	ch1_raw = context.get_channel('Channel 1')	
+	ch1_raw = context.get_channel('Channel 1', name='Channel 1')	
 
 	ch1 = DCBlock(ch1_raw).ac
 
-	ch1 = BandPass(0.01, 32.0, input=ch1)
-	ch1 = BandPass(0.01, 32.0, input=ch1)
-	#ch1 = BandPass(1.0, 32.0, input=ch1)
+	print BandPass
+	ch1 = BandPass(0.01, 32.0, ch1)
+	ch1 = BandPass(0.01, 32.0, ch1)
+	#ch1 = BandPass(1.0, 32.0, ch1)
 
 
 
 	OSC1 = Oscilloscope('Raw', channels=[ch1])
-	Spec = BarSpectrogram('Raw Spec', input=ch1)
+	Spec = BarSpectrogram('Raw Spec', ch1)
 
-	reward = BandPass(9, 12, input=ch1)
+	reward = BandPass(9, 12, ch1)
 	reward = Averager(RMS(reward))
 
-	inhibit1 = BandPass(18, 32, input=ch1)
+	inhibit1 = BandPass(18, 32, ch1)
 	inhibit1 = Averager(RMS(inhibit1))
 
-	inhibit2 = BandPass(1, 7, input=ch1)
+	inhibit2 = BandPass(1, 7, ch1)
 	inhibit2 = Averager(RMS(inhibit2))
 
 	total = DCBlock(RMS(ch1)).dc
@@ -77,9 +78,9 @@ def setup_flow(context):
 	layout.addWidget(OSC2.widget())
 	layout.addWidget(waterfall.widget(), 0, 1, 3, 1)
 
-	reward = Threshold('reward', input=reward).passfail
-	inhibit1 = Threshold('inhibit1', input=inhibit1, mode='decrease').passfail
-	inhibit2 = Threshold('inhibit2', input=inhibit2, mode='decrease').passfail
+	reward = Threshold('reward', reward).passfail
+	inhibit1 = Threshold('inhibit1', inhibit1, mode='decrease').passfail
+	inhibit2 = Threshold('inhibit2', inhibit2, mode='decrease').passfail
 
 	reward = Averager(reward)
 	inhibit1 = Averager(inhibit1)
@@ -102,8 +103,9 @@ def setup_flow(context):
 	return layout
 
 context = Context()
-context.register_channel('Channel 1')
-context.register_channel('Channel 2')
+print context.register_channel
+context.register_channel(idx='Channel 1', channel_name="Channel 1")
+context.register_channel(idx='Channel 2', channel_name="Channel 2")
 layout = setup_flow(context)
 
 analysisWindow = QWidget()

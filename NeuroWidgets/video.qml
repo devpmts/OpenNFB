@@ -15,6 +15,7 @@ Rectangle {
         id: mediaPlayer
         source: "../test.mp4"
         autoPlay: true
+        onStopped: play()
         //volume: parent.volume
         //playbackRate: parent.volume
     }
